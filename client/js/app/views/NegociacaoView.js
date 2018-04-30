@@ -4,7 +4,7 @@ class NegociacaoView {
         this._elemento = elemento;
     }
 
-    _template(){
+    _template(model){
 
         return `<table class="table table-hover table-bordered">
                     <thead>
@@ -17,16 +17,31 @@ class NegociacaoView {
                     </thead>
                     
                     <tbody>
+                        ${model.negociacoes.map(n => {
+                            return `<tr>
+                                <td>${DateHelper.dateParaTexto(n.data)}</td>
+                                <td>${n.quantidade}</td>
+                                <td>${n.valor}</td>
+                                <td>${n.valor * n.quantidade}</td>
+                            </tr>`}).join('')}
                     </tbody>
                     
                     <tfoot>
+                            <td colspan="3"></td>
+                            <td>${
+                                (function(){
+                                    let total = 0;
+                                    model.negociacoes.forEach(n => total += n.valor * n.quantidade);
+                                    return total;
+                                })()
+                            }</td>
                     </tfoot>
                 </table>`;
 
     }
 
-    update(){
-        this._elemento.innerHTML = this._template();
+    update(model){
+        this._elemento.innerHTML = this._template(model);
     }
 
 
