@@ -22,7 +22,7 @@ class NegociacaoView {
                                 <td>${DateHelper.dateParaTexto(n.data)}</td>
                                 <td>${n.quantidade}</td>
                                 <td>${n.valor}</td>
-                                <td>${n.valor * n.quantidade}</td>
+                                <td>${n.volume}</td>
                             </tr>`}).join('')}
                     </tbody>
                     
@@ -31,7 +31,7 @@ class NegociacaoView {
                             <td>${
                                 (function(){
                                     let total = 0;
-                                    model.negociacoes.forEach(n => total += n.valor * n.quantidade);
+                                    model.negociacoes.forEach(n => total += n.volume);
                                     return total;
                                 })()
                             }</td>
