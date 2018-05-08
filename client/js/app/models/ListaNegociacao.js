@@ -13,4 +13,8 @@ class ListaNegociacao {
         return [].concat(this._listaDeNegociacoes); 
     }
 
+    esvazia(){
+        this._listaDeNegociacoes = [];
+    }
+
 }

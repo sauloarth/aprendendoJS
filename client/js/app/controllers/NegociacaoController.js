@@ -34,6 +34,14 @@ class NegociacaoController {
         console.log(this._listaNegociacao.negociacoes);
     }
 
+    apaga(){
+        this._listaNegociacao.esvazia();
+        this._negociacoesView.update(this._listaNegociacao);
+
+        this._mensagem.texto = 'Negociações apagadas com sucesso.'
+        this._mensagemView.update(this._mensagem);
+    }
+
     _criaNegociacao(){
         return new Negociacao(
             DateHelper.textoParaDate(this._inputData.value),
