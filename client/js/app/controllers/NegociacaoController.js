@@ -18,9 +18,28 @@ class NegociacaoController {
         this._listaNegociacao = new ListaNegociacao(this, function(model){
             this._negociacoesView.update(model);
         });
-        */
+       
         this._listaNegociacao = new ListaNegociacao(model => 
             this._negociacoesView.update(model));
+        */
+       let self = this;
+        this._listaNegociacao = new Proxy(new ListaNegociacao(), {
+            get(target, prop, receiver) {
+                
+                if(['adiciona', 'esvazia'].includes(prop) && 
+                    typeof(target[prop]) == typeof(Function)) {
+                        return function() {
+                            console.log(`Interceptada: ${prop}`);
+                            Reflect.apply(target[prop], target, arguments);
+                            // só chamo após bind the arguments at the target
+                            self._negociacoesView.update(target);
+                        }
+                    }
+                            
+                return Reflect.get(target, prop, receiver);
+            }
+        });
+
         this._negociacoesView = new NegociacaoView($('#negociacoesView'));
         this._mensagem = new Mensagem();
         this._mensagemView = new MensagemView($('#mensagemView'));

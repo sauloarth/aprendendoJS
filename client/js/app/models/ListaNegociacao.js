@@ -7,7 +7,7 @@ class ListaNegociacao {
 
     adiciona(negociacao){
         this._listaDeNegociacoes.push(negociacao);
-        this._armadilha(this);
+        //this._armadilha(this);
         //Reflect.apply(this._armadilha, this._contexto, [this]);
     }
 
@@ -18,7 +18,7 @@ class ListaNegociacao {
 
     esvazia(){
         this._listaDeNegociacoes = [];
-        this._armadilha(this);
+       // this._armadilha(this);
         //Reflect.apply(this._armadilha, this._contexto, [this]);
     }
 
