@@ -22,4 +22,8 @@ class ListaNegociacao {
         //Reflect.apply(this._armadilha, this._contexto, [this]);
     }
 
+    volumeTotal(){
+        return this._listaDeNegociacoes.reduce((total, n) => total + n.volume, 0.0);
+    }
+
 }
