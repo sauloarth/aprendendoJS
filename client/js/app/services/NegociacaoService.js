@@ -5,60 +5,54 @@ class NegociacaoService {
     
     obterNegociacaoDaSemana() {
 
-        return new Promise((resolve, reject) => {
-            this._http
+        return this._http
                 .get('negociacoes/semana')
                 .then(negociaoes => {
-                    resolve(negociaoes.map(objeto => new Negociacao(
+                    return negociaoes.map(objeto => new Negociacao(
                         new Date(objeto.data),
                         objeto.quantidade,
                         objeto.valor
-                    )))
+                    ))
                 })
                 .catch(erro => {
                     console.log(erro)
-                    reject('Não foi possível importar as negociações da semana.')
+                    throw new Error('Não foi possível importar as negociações da semana.');
                 });
             
-        });
     }
 
     obterNegociacaoDaSemanaAnterior() {
-        return new Promise((resolve, reject) => {
-            this._http
+        return this._http
                 .get('negociacoes/anterior')
-                .then(negociaoes => {
-                    resolve(negociaoes.map(objeto => new Negociacao(
+                .then(negociaoes => { //as if 'then' behave like a resolve
+                    return negociaoes.map(objeto => new Negociacao(
                         new Date(objeto.data),
                         objeto.quantidade,
                         objeto.valor
-                    )))
+                    ))
                 })
                 .catch(erro => {
                     console.log(erro)
-                    reject('Não foi possível importar as negociações da semana anterior.')
+                    throw new Error('Não foi possível importar as negociações da semana anterior.');
                 });
             
-        });
     }
 
     obterNegociacaoDaSemanaRetrasada() {
-        return new Promise((resolve, reject) => {
-            this._http
+        return this._http
                 .get('negociacoes/retrasada')
                 .then(negociaoes => {
-                    resolve(negociaoes.map(objeto => new Negociacao(
+                    return negociaoes.map(objeto => new Negociacao(
                         new Date(objeto.data),
                         objeto.quantidade,
                         objeto.valor
-                    )))
+                    ))
                 })
                 .catch(erro => {
                     console.log(erro)
-                    reject('Não foi possível importar as negociações da semana retrasada.')
+                    throw new Error('Não foi possível importar as negociações da semana retrasada.');
                 });
             
-        });
     }
 
 }
