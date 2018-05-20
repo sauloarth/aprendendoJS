@@ -27,7 +27,7 @@
 
         <button class="btn btn-primary" type="submit" onclick="sendPost(event)">Enviar dados para servidor</button>
     </form>
-
+    <script src="js/app/services/HttpService.js"></script>
     <script>
 
         function sendPost(event) {
@@ -46,31 +46,17 @@
                 valor : inputValor.value
             };
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/negociacoes', true);
+            new HttpService()
+                .post('/negociacoes', negociacao)
+                .then(() => {
+                    inputData = '';
+                    inputQuantidade = 1;
+                    inputValor = 0.0;
+                    //inputData.focus();
+                    alert('Negociação enviada com sucesso.');
+                })
+                .catch(erro => alert(`Não foi possível enviar a negociação. ${erro}`));
 
-            xhr.setRequestHeader("Content-type", "application/json");
-
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4){
-
-                    if(xhr.status == 200){
-                        inputData = '';
-                        inputQuantidade = 1;
-                        inputValor = 0.0;
-                        //inputData.focus();
-                        alert('Negociação enviada com sucesso.');
-                    } else {
-                        alert(`Não foi possívle enviar a negociação. ${xhr.responseText}`);
-                    }
-                }
-            }
-
-            xhr.send(JSON.stringify(negociacao));
-
-            //aqui você deve ler os dados do formulário
-            //construir o json
-            //enviar o XMLHttpRequest
         }
     </script>
 </body>
