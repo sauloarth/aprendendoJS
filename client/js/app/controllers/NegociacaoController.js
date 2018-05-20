@@ -36,11 +36,13 @@ class NegociacaoController {
     adiciona(event){
         event.preventDefault();
         console.log(this);
-        this._listaNegociacao.adiciona(this._criaNegociacao());
-        //this._negociacoesView.update(this._listaNegociacao);
-        this._mensagem.texto = 'Negociação inserida com sucesso.'
-        //this._mensagemView.update(this._mensagem);
-        this._limpaFormulario();
+        try {
+            this._listaNegociacao.adiciona(this._criaNegociacao());
+            this._mensagem.texto = 'Negociação inserida com sucesso.'
+            this._limpaFormulario();
+        } catch (erro) {
+            this._mensagem.texto = erro;
+        }
 
         console.log(this._listaNegociacao.negociacoes);
     }
