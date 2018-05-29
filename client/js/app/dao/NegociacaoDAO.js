@@ -25,4 +25,41 @@ class NegociacaoDAO{
         });
     }
 
+    listaTodos(){
+        return new Promise((resolve, reject) => {
+            let cursor = this._connection
+                .transaction([this._store], 'readwrite')
+                .objectStore(this._store)
+                .openCursor();
+                
+                let negociacoes = [];
+        
+                cursor.onsuccess = e => {
+                    let negociacaoAtual = e.target.result;
+        
+                    if(negociacaoAtual){
+                        var objetoJSON = negociacaoAtual.value;
+                        negociacoes.push(new Negociacao(
+                            objetoJSON._data,
+                            objetoJSON._quantidade,
+                            objetoJSON._valor));
+        
+                        negociacaoAtual.continue();
+                    } else {
+                        resolve(negociacoes);
+                    }
+                }
+                
+                cursor.onerror = e => {
+                    console.log(e.target.error.name);
+                    reject('Não foi possível listar as negociações.');
+                }
+            
+
+
+
+        })
+   
+    }
+
 }
