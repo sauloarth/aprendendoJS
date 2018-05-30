@@ -1,14 +1,6 @@
 class NegociacaoController {
 
     constructor() {
-
-        /*criou um "atalho" para document.querySelector
-         *o normal é que esse atalho sempre se refira ao elemento no qual
-         *está sendo chamado, mas como precisamos que o querySelector sempre
-         *seja acessado no contexto do nosso document, utilizamos o
-         *.bind(document) para que o atalho seja criado mas a referencia
-         *seja mantida em document.
-         */
         
         let $ = document.querySelector.bind(document);
         this._inputData = $('#data');
@@ -32,51 +24,52 @@ class NegociacaoController {
             'texto'
         )
 
-        ConnectionFactory.getConnection()
-            .then(connection => new NegociacaoDAO(connection))
-            .then(dao => dao.listaTodos())
-            .then(negociacoes => {
+        this._negociacaoService = new NegociacaoService();
+        this._init();
+
+        
+    }
+    
+    _init(){
+        
+        this._negociacaoService
+            .lista()
+            .then(negociacoes => 
                 negociacoes.forEach(negociacao => this._listaNegociacao.adiciona(negociacao))
-            })
+            )
             .catch(erro => {
-                console.log(erro);
                 this._mensagem.texto = erro;
             })
-            
+    
+        setInterval(() => {
+            this.importaNegociacoes();
+        }, 3000)
+    
     }
-
+    
     adiciona(event){
         event.preventDefault();
         console.log(this);
 
-        ConnectionFactory.getConnection()
-            .then(connection => {
-                let negociacao = this._criaNegociacao();
-
-                new NegociacaoDAO(connection)
-                    .adiciona(negociacao)
-                    .then(() => {
-                        this._listaNegociacao.adiciona(negociacao);
-                        this._mensagem.texto = 'Negociação inserida com sucesso.'
-                        this._limpaFormulario();
-                    });
-
+        let negociacao = this._criaNegociacao();
+        this._negociacaoService
+            .cadastra(negociacao)
+            .then(mensagem => {
+                this._listaNegociacao.adiciona(negociacao);
+                this._mensagem.texto = mensagem;
+                this._limpaFormulario();
             })
-            .catch(erro => this._mensagem.texto = erro);
+            .catch(erro => this._mensagem.texto = erros);
 
         console.log(this._listaNegociacao.negociacoes);
     }
 
     apaga(){
-       
-        ConnectionFactory.getConnection()
-            .then(connection => new NegociacaoDAO(connection))
-            .then(dao => dao.apagarTodos())
+        this._negociacaoService
+            .apaga()
             .then(mensagem => {
                 this._listaNegociacao.esvazia();
-                
                 this._mensagem.texto = mensagem;
-
             })
             .catch(erro => {
                 this._mensagem.texto = erro;
@@ -102,7 +95,15 @@ class NegociacaoController {
     importaNegociacoes(){
         let service = new NegociacaoService();
         service
-            .obterNegociacoes().then(negociacoes => {
+            .obterNegociacoes()
+            .then(negociacoes => 
+                negociacoes.filter(negociacao => 
+                    !this._listaNegociacao.negociacoes.some(negociacaoExistente => 
+                        JSON.stringify(negociacao) == JSON.stringify(negociacaoExistente)
+                    )
+                )
+            )
+            .then(negociacoes => {
                 negociacoes.forEach(negociacao => this._listaNegociacao.adiciona(negociacao));
                 this._mensagem.texto = 'Negociações importadas com sucesso.';
             })
